@@ -25,20 +25,30 @@ function render() {
     }
     filterd.forEach(job => {
         const div = document.createElement('div')
-        div.className = 'bg-white p-4 mb-3 rounded shadow';
+        div.className = 'bg-white p-4 mb-3 rounded-lg border shadow';
 
         div.innerHTML = `
+        <div class="flex justify-between items-center space-y-4">
+        <div>
         <h3 class="font-bold text-lg">${job.company}</h3>
-        <p>${job.position}</p>
-        <p>${job.location}</p>
-        <p>${job.type}</p>
-        <p class="font-semibold">${job.salary}</p>
+        <p class="text-sm text-gray-700">${job.position}</p>
+        <p class="text-sm text-gray-500 ">${job.location} . ${job.type} . ${job.salary} </p>
+        </div>
+        <button class="p-3 bg-slate-100 rounded-full cursor-pointer" onclick="deleteJob(${job.id})"><span><i class="fa-regular fa-trash-can"></i></span></button>
+        </div>
+
+        <div class="my-3">
+        <span class="px-3 py-2 cursor-pointer text-xs rounded bg-gray-200 text-gray-600">
+        ${job.status === 'all' ? 'NOT APPLIED' : job.status.toUpperCase()}
+        </span>
+        </div>
+
         <p class="text-sm text-gray-500">${job.description}</p>
 
-        <div class="mt-3 space-x-2">
-        <button class="bg-green-500 text-white px-2 py-1 rounded" onclick="setStatus(${job.id}, 'interview')">Interview</button>
-        <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="setStatus(${job.id}, 'rejected')">Reject</button>
-        <button class="bg-gray-700 text-white px-2 py-1 rounded" onclick="deleteJob(${job.id})">Delete</button>
+        <div class="mt-3 flex gap-2">
+        <button class="btn btn-sm btn-outline btn-success" onclick="setStatus(${job.id}, 'interview')">INTERVIEW</button>
+        <button class="btn btn-sm btn-outline btn-error" onclick="setStatus(${job.id}, 'rejected')">REJECTED</button>
+        
         </div>
         `;
         container.appendChild(div)
@@ -72,12 +82,12 @@ document.querySelectorAll(".tab").forEach(btn => {
         currentTab = btn.innerText.toLowerCase();
 
         document.querySelectorAll(".tab").forEach(t => {
-            t.classList.remove('btn-primary')
-            t.classList.add('btn-outline')
+            t.classList.remove('bg-blue-600', 'text-white')
+            t.classList.add('bg-gray-200', 'text-gray-600')
         });
 
-        btn.classList.add("btn-primary")
-        btn.classList.remove("btn-outline")
+        btn.classList.add('bg-blue-600', 'text-white')
+        btn.classList.remove('bg-gray-200', 'text-gray-600')
         render()
         updateCounts()
     }
