@@ -29,25 +29,26 @@ function render() {
 
         div.innerHTML = `
         <div class="flex justify-between items-center space-y-4">
-        <div>
-        <h3 class="font-bold text-lg">${job.company}</h3>
-        <p class="text-sm text-gray-700">${job.position}</p>
-        <p class="text-sm text-gray-500 ">${job.location} . ${job.type} . ${job.salary} </p>
-        </div>
-        <button class="p-3 bg-slate-100 rounded-full cursor-pointer" onclick="deleteJob(${job.id})"><span><i class="fa-regular fa-trash-can"></i></span></button>
+         <div>
+          <h3 class="font-bold text-lg">${job.company}</h3>
+          <p class="text-sm text-gray-700">${job.position}</p>
+          <p class="text-sm text-gray-500 ">${job.location} . ${job.type} . ${job.salary} </p>
+         </div>
+         <button class="p-3 bg-slate-100 cursor-pointer rounded-full" onclick="deleteJob(${job.id})"><span><i class="fa-regular fa-trash-can"></i></span></button>
         </div>
 
         <div class="my-3">
-        <span class="px-3 py-2 cursor-pointer text-xs rounded bg-gray-200 text-gray-600">
-        ${job.status === 'all' ? 'NOT APPLIED' : job.status.toUpperCase()}
-        </span>
+         <span class="px-3 py-2  text-xs rounded bg-gray-200 text-gray-600">
+          ${job.status === 'all' ? 'NOT APPLIED' : job.status.toUpperCase()}
+         </span>
         </div>
 
         <p class="text-sm text-gray-500">${job.description}</p>
 
         <div class="mt-3 flex gap-2">
-        <button class="btn btn-sm btn-outline btn-success" onclick="setStatus(${job.id}, 'interview')">INTERVIEW</button>
-        <button class="btn btn-sm btn-outline btn-error" onclick="setStatus(${job.id}, 'rejected')">REJECTED</button>
+          <button class="btn btn-sm btn-outline btn-success" onclick="setStatus(${job.id}, 'interview')">INTERVIEW</button>
+
+         <button class="btn btn-sm btn-outline btn-error" onclick="setStatus(${job.id}, 'rejected')">REJECTED</button>
         
         </div>
         `;
@@ -78,7 +79,7 @@ function updateCounts() {
 }
 
 document.querySelectorAll(".tab").forEach(btn => {
-    btn.onclick = () => {
+    btn.addEventListener('click',() => {
         currentTab = btn.innerText.toLowerCase();
 
         document.querySelectorAll(".tab").forEach(t => {
@@ -90,7 +91,7 @@ document.querySelectorAll(".tab").forEach(btn => {
         btn.classList.remove('bg-gray-200', 'text-gray-600')
         render()
         updateCounts()
-    }
-})
+    });
+});
 
 render()
