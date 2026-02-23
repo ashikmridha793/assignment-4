@@ -22,9 +22,7 @@ const jobCount = document.getElementById("jobCount");
 function render() {
     container.innerHTML = "";
 
-    const filtered = currentTab === "all"
-        ? jobs
-        : jobs.filter(job => job.status === currentTab);
+    const filtered = currentTab === "all" ? jobs : jobs.filter(job => job.status === currentTab);
 
     emptyState.classList.toggle("hidden", filtered.length !== 0);
 
@@ -86,10 +84,7 @@ function updateCounts() {
     rejectCount.innerText = jobs.filter(j => j.status === "rejected").length;
 
     const visibleJobs =
-        currentTab === "all"
-            ? jobs.length
-            : jobs.filter(j => j.status === currentTab).length;
-
+        currentTab === "all" ? jobs.length : jobs.filter(j => j.status === currentTab).length;
     jobCount.innerText = `${visibleJobs} of `;
 }
 
@@ -104,9 +99,10 @@ container.addEventListener("click", e => {
 });
 
 document.querySelectorAll(".tab").forEach(btn => {
+    
     btn.addEventListener("click", () => {
         currentTab = btn.dataset.tab;
-
+        
         document.querySelectorAll(".tab").forEach(t => {
             t.classList.remove("bg-blue-600", "text-white");
             t.classList.add("bg-gray-200", "text-gray-600");
