@@ -55,7 +55,7 @@ function render() {
                 INTERVIEW
             </button>
             <button class="reject-btn btn btn-sm btn-outline btn-error" data-id="${job.id}">
-                REJECTED
+                REJECT
             </button>
         </div>
         `;
