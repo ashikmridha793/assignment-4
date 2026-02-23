@@ -7,91 +7,116 @@ const jobs = [
     { id: 6, company: "Adobe", position: "UX Designer", location: "Remote", type: "Contract", salary: "$4200", description: "Improve UX", status: "all" },
     { id: 7, company: "Tesla", position: "Fullstack Dev", location: "USA", type: "Full Time", salary: "$6500", description: "Build systems", status: "all" },
     { id: 8, company: "Spotify", position: "Mobile Dev", location: "Remote", type: "Part Time", salary: "$3500", description: "Develop apps", status: "all" }
-]
+];
 
-let currentTab = 'all'
+let currentTab = "all";
 
-const container = document.getElementById('all-jobs-container')
-const emptyState = document.getElementById('empty-state')
+const container = document.getElementById("all-jobs-container");
+const emptyState = document.getElementById("empty-state");
+
+const allCount = document.getElementById("allCount");
+const interviewCount = document.getElementById("interviewCount");
+const rejectCount = document.getElementById("rejectCount");
+const jobCount = document.getElementById("jobCount");
 
 function render() {
     container.innerHTML = "";
-    const filterd = jobs.filter(job => currentTab === "all" ? true : job.status === currentTab)
 
-    if (filterd.length === 0) {
-        emptyState.classList.remove('hidden')
-    } else {
-        emptyState.classList.add('hidden')
-    }
-    filterd.forEach(job => {
-        const div = document.createElement('div')
-        div.className = 'bg-white p-4 mb-3 rounded-lg border shadow';
+    const filtered = currentTab === "all"
+        ? jobs
+        : jobs.filter(job => job.status === currentTab);
+
+    emptyState.classList.toggle("hidden", filtered.length !== 0);
+
+    filtered.forEach(job => {
+        const div = document.createElement("div");
+        div.className = "bg-white p-4 mb-3 rounded-lg border shadow";
 
         div.innerHTML = `
-        <div class="flex justify-between items-center space-y-4">
-         <div>
-          <h3 class="font-bold text-lg">${job.company}</h3>
-          <p class="text-sm text-gray-700">${job.position}</p>
-          <p class="text-sm text-gray-500 ">${job.location} . ${job.type} . ${job.salary} </p>
-         </div>
-         <button class="p-3 bg-slate-100 cursor-pointer rounded-full" onclick="deleteJob(${job.id})"><span><i class="fa-regular fa-trash-can"></i></span></button>
+        <div class="flex justify-between items-center">
+            <div>
+                <h3 class="font-bold text-lg">${job.company}</h3>
+                <p class="text-sm text-gray-700">${job.position}</p>
+                <p class="text-sm text-gray-500">${job.location} · ${job.type} · ${job.salary}</p>
+            </div>
+            <button class="delete-btn p-3 bg-slate-100 rounded-full" data-id="${job.id}">
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
         </div>
 
         <div class="my-3">
-         <span class="px-3 py-2  text-xs rounded bg-gray-200 text-gray-600">
-          ${job.status === 'all' ? 'NOT APPLIED' : job.status.toUpperCase()}
-         </span>
+            <span class="px-3 py-1 text-xs rounded bg-gray-200 text-gray-600">
+                ${job.status === "all" ? "NOT APPLIED" : job.status.toUpperCase()}
+            </span>
         </div>
 
         <p class="text-sm text-gray-500">${job.description}</p>
 
         <div class="mt-3 flex gap-2">
-          <button class="btn btn-sm btn-outline btn-success" onclick="setStatus(${job.id}, 'interview')">INTERVIEW</button>
-
-         <button class="btn btn-sm btn-outline btn-error" onclick="setStatus(${job.id}, 'rejected')">REJECTED</button>
-        
+            <button class="interview-btn btn btn-sm btn-outline btn-success" data-id="${job.id}">
+                INTERVIEW
+            </button>
+            <button class="reject-btn btn btn-sm btn-outline btn-error" data-id="${job.id}">
+                REJECTED
+            </button>
         </div>
         `;
-        container.appendChild(div)
-    })
 
+        container.appendChild(div);
+    });
+
+    updateCounts();
 }
 
 function setStatus(id, status) {
     const job = jobs.find(j => j.id === id);
-    job.status = status;
+    if (job) job.status = status;
     render();
 }
 
 function deleteJob(id) {
     const index = jobs.findIndex(j => j.id === id);
-    jobs.splice(index, 1);
+    if (index !== -1) jobs.splice(index, 1);
     render();
 }
 
 function updateCounts() {
     allCount.innerText = jobs.length;
-    interviewCount.innerText = jobs.filter(j => j.status === "interview").length
-    rejectCount.innerText = jobs.filter(j => j.status === "rejected").length
+    interviewCount.innerText = jobs.filter(j => j.status === "interview").length;
+    rejectCount.innerText = jobs.filter(j => j.status === "rejected").length;
 
-    const tabJobs = currentTab === "all" ? jobs.length : jobs.filter(j => j.status === currentTab).length
-    jobCount.innerText = tabJobs + 'of';
+    const visibleJobs =
+        currentTab === "all"
+            ? jobs.length
+            : jobs.filter(j => j.status === currentTab).length;
+
+    jobCount.innerText = `${visibleJobs} of `;
 }
 
+container.addEventListener("click", e => {
+    const interviewBtn = e.target.closest(".interview-btn");
+    const rejectBtn = e.target.closest(".reject-btn");
+    const deleteBtn = e.target.closest(".delete-btn");
+
+    if (interviewBtn) setStatus(+interviewBtn.dataset.id, "interview");
+    if (rejectBtn) setStatus(+rejectBtn.dataset.id, "rejected");
+    if (deleteBtn) deleteJob(+deleteBtn.dataset.id);
+});
+
 document.querySelectorAll(".tab").forEach(btn => {
-    btn.addEventListener('click',() => {
-        currentTab = btn.innerText.toLowerCase();
+    btn.addEventListener("click", () => {
+        currentTab = btn.dataset.tab;
 
         document.querySelectorAll(".tab").forEach(t => {
-            t.classList.remove('bg-blue-600', 'text-white')
-            t.classList.add('bg-gray-200', 'text-gray-600')
+            t.classList.remove("bg-blue-600", "text-white");
+            t.classList.add("bg-gray-200", "text-gray-600");
         });
 
-        btn.classList.add('bg-blue-600', 'text-white')
-        btn.classList.remove('bg-gray-200', 'text-gray-600')
-        render()
-        updateCounts()
+        btn.classList.add("bg-blue-600", "text-white");
+        btn.classList.remove("bg-gray-200", "text-gray-600");
+
+        render();
     });
 });
 
-render()
+render();
